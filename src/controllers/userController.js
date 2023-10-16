@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs"); // to making a secure password for save oin MongoDB
-// const asyncHandler = require("express-async-handler");
+const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 
 // @desc    Register new user
-// @route   POST /api/users
+// @route   POST /auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body; // Getting the variables from frontend
@@ -46,7 +46,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 // @desc    Authenticate a user for login
-// @route   POST /api/users/login
+// @route   POST /auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -68,6 +68,11 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Remove user
+// @route   DELETE /auth/remove
+// @access  Public
+const removeUser = asyncHandler(async (req, res) => {});
+
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
@@ -86,4 +91,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  removeUser,
 };
