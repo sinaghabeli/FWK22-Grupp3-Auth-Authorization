@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs"); // to making a secure password for save oin MongoDB
+const bcrypt = require("bcryptjs"); // to making a secure password for save on MongoDB
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 
@@ -34,6 +34,8 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    res.cookie("authToken", generateToken(user._id), { httpOnly: true });
+
     res.status(201).json({
       _id: user.id,
       email: user.email,
@@ -56,6 +58,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // decrypt the password and check for the right password
   if (user && (await bcrypt.compare(password, user.password))) {
+    res.cookie("authToken", generateToken(user._id), { httpOnly: true });
+
     res.json({
       _id: user.id,
       name: user.name,
@@ -66,6 +70,18 @@ const loginUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Invalid credentials");
   }
+});
+
+// @desc    Logout user (clearing httpOnly Cookie)
+// @route   POST /auth/logout
+// @access  Public
+const logoutUser = asyncHandler(async (req, res) => {
+  // Clear the HTTP-only cookie on the server
+  res.clearCookie("authToken", { httpOnly: true });
+
+  // You may perform additional logout-related actions if needed
+
+  res.status(200).send("Logout successful");
 });
 
 // @desc    Remove user
@@ -83,7 +99,7 @@ const getMe = asyncHandler(async (req, res) => {
 // Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+    expiresIn: "1h",
   });
 };
 
@@ -92,4 +108,5 @@ module.exports = {
   loginUser,
   getMe,
   removeUser,
+  logoutUser,
 };
