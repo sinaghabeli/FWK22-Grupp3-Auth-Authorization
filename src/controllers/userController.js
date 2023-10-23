@@ -31,6 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     email,
     password: hashedPassword,
+    role: "user",
   });
 
   if (user) {
@@ -79,9 +80,20 @@ const logoutUser = asyncHandler(async (req, res) => {
   // Clear the HTTP-only cookie on the server
   res.clearCookie("authToken", { httpOnly: true });
 
-  // You may perform additional logout-related actions if needed
-
   res.status(200).send("Logout successful");
+});
+
+// @desc    Check if cookie exist
+// @route   GET /auth/check-cookie
+// @access  Public
+const checkCookie = asyncHandler(async (req, res) => {
+  // Check if the HTTP-only cookie exists (e.g., req.cookies.authToken)
+  // If it exists, send a success response; otherwise, send an error response
+  if (req.cookies.authToken) {
+    res.status(200).send("HTTP-only cookie exists.");
+  } else {
+    res.status(401).send("HTTP-only cookie does not exist.");
+  }
 });
 
 // @desc    Remove user
@@ -109,4 +121,5 @@ module.exports = {
   getMe,
   removeUser,
   logoutUser,
+  checkCookie,
 };
