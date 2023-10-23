@@ -63,8 +63,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     res.json({
       _id: user.id,
-      name: user.name,
       email: user.email,
+      role: user.role,
       token: generateToken(user._id),
     });
   } else {
@@ -90,9 +90,9 @@ const checkCookie = asyncHandler(async (req, res) => {
   // Check if the HTTP-only cookie exists (e.g., req.cookies.authToken)
   // If it exists, send a success response; otherwise, send an error response
   if (req.cookies.authToken) {
-    res.status(200).send("HTTP-only cookie exists.");
+    res.status(200).json("exist");
   } else {
-    res.status(401).send("HTTP-only cookie does not exist.");
+    res.status(401).json("not exist");
   }
 });
 
