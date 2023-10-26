@@ -96,11 +96,6 @@ const checkCookie = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Remove user
-// @route   DELETE /auth/remove
-// @access  Public
-const removeUser = asyncHandler(async (req, res) => {});
-
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
