@@ -114,7 +114,6 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
-  removeUser,
   logoutUser,
   checkCookie,
 };
