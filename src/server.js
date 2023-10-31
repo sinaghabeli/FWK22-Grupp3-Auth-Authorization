@@ -5,8 +5,28 @@ const { errorHandler } = require("./middleware/errorMiddleware"); // Simplifies 
 const cors = require("cors");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
+const helmet = require("helmet"); // Helmet
 
 const app = express();
+
+// Adding helmet for security
+// app.use(helmet());
+// Use helmet middleware
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "trusted-scripts.com"],
+        styleSrc: ["style.com"],
+      },
+    },
+    noCache: true, // Disable client-side caching
+  })
+);
+
+// Enable/disable specific headers
+app.use(helmet.frameguard({ action: "deny" }));
 
 // Connecting to Mongodb
 connectDB();
