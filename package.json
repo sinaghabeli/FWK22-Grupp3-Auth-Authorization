@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "start": "node ./src/service.js",
-    "dev": "nodemon ./src/service.js"
+    "server": "nodemon ./src/service.js",
+    "client": "npm start --prefix ../FWK22-Grupp3-Frontend-Authorization",
+    "dev": "concurrently \"npm run server\"  \"npm run client\""
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "concurrently": "^8.2.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
