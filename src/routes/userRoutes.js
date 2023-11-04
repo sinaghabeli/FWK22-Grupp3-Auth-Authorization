@@ -13,7 +13,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 // Declaring API for controllers
-router.post("/register", protect, registerUser);
+router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.get("/check-cookie", checkCookie);
