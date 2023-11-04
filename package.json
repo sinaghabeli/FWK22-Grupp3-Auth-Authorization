@@ -7,8 +7,9 @@
     "test": "jest",
     "start": "node ./src/service.js",
     "server": "nodemon ./src/service.js",
+    "backend": "nodemon ./FWK22-Grupp3-Backend-Authorization/src/service.js",
     "client": "npm start --prefix ../FWK22-Grupp3-Frontend-Authorization",
-    "dev": "concurrently \"npm run server\"  \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run backend\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
