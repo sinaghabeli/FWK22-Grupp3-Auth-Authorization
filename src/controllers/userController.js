@@ -35,7 +35,9 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.cookie("authToken", generateToken(user._id), { httpOnly: true });
+    res.cookie("authToken", generateToken(user._id, user.role), {
+      httpOnly: true,
+    });
 
     res.status(201).json({
       _id: user.id,
@@ -60,7 +62,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // decrypt the password and check for the right password
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.cookie("authToken", generateToken(user._id), { httpOnly: true });
+    res.cookie("authToken", generateToken(user._id, user.role), {
+      httpOnly: true,
+    });
 
     res.json({
       _id: user.id,
@@ -95,16 +99,9 @@ const checkCookie = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get user data
-// @route   GET /api/users/me
-// @access  Private
-const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user);
-});
-
 // Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 };
@@ -112,7 +109,6 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
-  getMe,
   logoutUser,
   checkCookie,
 };
