@@ -76,7 +76,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // @desc    Logout user (clearing httpOnly Cookie)
 // @route   POST /auth/logout
-// @access  Public
 const logoutUser = asyncHandler(async (req, res) => {
   // Clear the HTTP-only cookie on the server
   res.clearCookie("authToken", { httpOnly: true });
@@ -86,12 +85,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 // @desc    Check if cookie exist
 // @route   GET /auth/check-cookie
-// @access  Public
 const checkCookie = asyncHandler(async (req, res) => {
-  // Check if the HTTP-only cookie exists (e.g., req.cookies.authToken)
-  // If it exists, send a success response; otherwise, send an error response
+  const token = req.cookies.authToken;
+
   if (req.cookies.authToken) {
-    res.status(200).json("exist");
+    res.status(200).json({ role: "exist", token });
   } else {
     res.status(401).json("not exist");
   }
