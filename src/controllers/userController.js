@@ -35,10 +35,19 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    // Creating cookie with token and role
-    res.cookie("authToken", generateToken(user._id, user.role), {
+    const tokenPayload = {
+      role: user.role,
+      token: generateToken(user._id, user.role),
+    };
+
+    res.cookie("authToken", JSON.stringify(tokenPayload), {
       httpOnly: true,
     });
+
+    // Creating cookie with token and role
+    // res.cookie("authToken", generateToken(user._id, user.role), {
+    //   httpOnly: true,
+    // });
 
     res.status(201).json({
       _id: user.id,
@@ -63,10 +72,19 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // decrypt the password and check for the right password
   if (user && (await bcrypt.compare(password, user.password))) {
-    // Creating cookie with token and role
-    res.cookie("authToken", generateToken(user._id, user.role), {
+    const tokenPayload = {
+      role: user.role,
+      token: generateToken(user._id, user.role),
+    };
+
+    res.cookie("authToken", JSON.stringify(tokenPayload), {
       httpOnly: true,
     });
+
+    // Creating cookie with token and role
+    // res.cookie("authToken", generateToken(user._id, user.role), {
+    //   httpOnly: true,
+    // });
 
     res.json({
       _id: user.id,
@@ -81,21 +99,26 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 // @desc    Logout user (clearing httpOnly Cookie)
-// @route   POST /auth/logout
+// @route   GET /auth/logout
 const logoutUser = asyncHandler(async (req, res) => {
-  // Clear the HTTP-only cookie on the server
-  res.clearCookie("authToken", { httpOnly: true });
-
-  res.status(200).send("Logout successful");
+  try {
+    res.clearCookie("authToken", { httpOnly: true });
+    res.status(200).send("Logout successful");
+  } catch (error) {
+    console.error("Error clearing cookie:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // @desc    Check if cookie exist
 // @route   GET /auth/check-cookie
 const checkCookie = asyncHandler(async (req, res) => {
-  const token = req.cookies.authToken;
+  const checkCookieValue = req.cookies.authToken;
+
+  const { role, token } = JSON.parse(checkCookieValue);
 
   if (req.cookies.authToken) {
-    res.status(200).json({ role: "exist", token });
+    res.status(200).json({ role, token });
   } else {
     res.status(401).json("not exist");
   }
